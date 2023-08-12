@@ -19,19 +19,43 @@ document.body.onpointermove = event => {
 };
 */
 
-const moveDuration = 2000; // in milliseconds
+const moveSpeed = 300; // pixels per second
+const timeInterval = 16; // milliseconds
+var velocityX = 0;
+var velocityY = 0;
 
-function moveToRandomPoint(child) {
+function move(child) {
     const { clientWidth, clientHeight } = document.documentElement;
-    const randomX = Math.random() * (clientWidth - child.offsetWidth);
-    const randomY = Math.random() * (clientHeight - child.offsetHeight);
+    const randomX = Math.random() * clientWidth;
+    const randomY = Math.random() * clientHeight;
 
-    child.style.transition = `transform ${moveDuration}ms linear`;
-    child.style.transform = `translate(${randomX}px, ${randomY}px)`;
+    let currentX = child.offsetLeft;
+    let currentY = child.offsetTop;
 
-    setTimeout(() => {
-        moveToRandomPoint(child);
-    }, moveDuration);
+    const deltaX = randomX - currentX;
+    const deltaY = randomY - currentY;
+    const distance = Math.sqrt(deltaX ** 2 + deltaY ** 2);
+
+    const velocityX = (deltaX / distance) * moveSpeed;
+    const velocityY = (deltaY / distance) * moveSpeed;
+
+    function updatePosition() {
+        currentX += velocityX * (timeInterval / 1000);
+        currentY += velocityY * (timeInterval / 1000);
+
+        child.style.left = `${currentX}px`;
+        child.style.top = `${currentY}px`;
+
+        const remainingDistance = Math.sqrt((randomX - currentX) ** 2 + (randomY - currentY) ** 2);
+
+        if (remainingDistance > ) {
+            requestAnimationFrame(updatePosition);
+        } else {
+            moveToRandomPoint(child);
+        }
+    }
+
+    updatePosition();
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -39,6 +63,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const children = nebulaSpace.children;
 
     for (const child of children) {
-        moveToRandomPoint(child);
+        move(child);
     }
 });
