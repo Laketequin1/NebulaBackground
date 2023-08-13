@@ -1,28 +1,13 @@
-/*
-document.body.onpointermove = event => {
-    const { clientX, clientY } = event;
-
-    const nebulaSpace = document.getElementById("nebula-space");
-    const children = nebulaSpace.children;
-
-    for (const child of children) {
-        child.animate(
-            [
-                { left: child.style.left, top: child.style.top },
-                { left: `${clientX}px`, top: `${clientY}px` }
-            ],
-            { duration: 2000, fill: "forwards" }
-        );
-    }
-
-    console.log(clientX, clientY);
-};
-*/
-
 const moveSpeed = 0.1; // pixels per second
-const pushForce = -8;
-const friction = 0.995;
+const pushForce = -1000;
+const pullForce = -3000;
+const friction = 0.99;
 const timeInterval = 200; // milliseconds;
+const { clientWidth, clientHeight } = document.documentElement;
+
+function clamp(value, min, max) {
+    return Math.min(Math.max(value, min), max);
+}
 
 function updatePosition(child, randomX, randomY, children) {
     const currentX = child.offsetLeft;
@@ -44,8 +29,8 @@ function updatePosition(child, randomX, randomY, children) {
             const deltaY = otherChild.offsetTop - currentY;
             const distance = Math.sqrt(deltaX ** 2 + deltaY ** 2);
 
-            child.velocityX += (deltaX / distance) * pushForce * (1 / distance);
-            child.velocityY += (deltaY / distance) * pushForce * (1 / distance);
+            child.velocityX += (deltaX / distance ** 1.75) * pushForce * (1 / distance);
+            child.velocityY += (deltaY / distance ** 1.75) * pushForce * (1 / distance);
         }
     }
 
@@ -57,7 +42,7 @@ function updatePosition(child, randomX, randomY, children) {
             { left: child.style.left, top: child.style.top },
             { left: `${currentX + child.velocityX}px`, top: `${currentY + child.velocityY}px` }
         ],
-        { duration: timeInterval, fill: "forwards" }
+        { duration: timeInterval + 20, fill: "forwards" }
     );
 
     const remainingDistance = Math.sqrt((randomX - currentX) ** 2 + (randomY - currentY) ** 2);
@@ -84,7 +69,6 @@ function move(child, children) {
 document.addEventListener("DOMContentLoaded", () => {
     const nebulaSpace = document.getElementById("nebula-space");
     const children = nebulaSpace.children;
-    const { clientWidth, clientHeight } = document.documentElement;
 
     for (const child of children) {
         const randomX = Math.random() * (clientWidth);
@@ -104,3 +88,21 @@ document.addEventListener("DOMContentLoaded", () => {
         move(child, Array.from(children));
     }
 });
+
+/*
+document.body.onpointermove = event => {
+    const { clientX, clientY } = event;
+
+    const userMouse = document.getElementsByClassName("invisible");
+
+    for (const child of userMouse) {
+        child.animate(
+            [
+                { left: child.style.left, top: child.style.top },
+                { left: `${clientX}px`, top: `${clientY}px` }
+            ],
+            { duration: 500, fill: "forwards" }
+        );
+    }
+};
+*/

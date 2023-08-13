@@ -1,17 +1,17 @@
 .pink {
-  background: radial-gradient(circle, rgba(238, 35, 211, 0.5) 0%, rgba(238, 35, 211, 0) 60%);
+  background: radial-gradient(circle, rgba(238, 35, 211, 0.5) 0%, rgba(238, 35, 211, 0) 90%);
 }
 
 .purple {
-  background: radial-gradient(circle, rgba(165, 16, 211, 0.5) 0%, rgba(165, 16, 211, 0) 60%);
+  background: radial-gradient(circle, rgba(165, 16, 211, 0.5) 0%, rgba(165, 16, 211, 0) 90%);
 }
 
 .dark {
-  background: radial-gradient(circle, rgba(66, 5, 180, 0.5) 0%, rgba(66, 5, 180, 0) 60%);
+  background: radial-gradient(circle, rgba(66, 5, 180, 0.5) 0%, rgba(66, 5, 180, 0) 90%);
 }
 
 .bright {
-  background: radial-gradient(circle, rgba(183, 88, 247, 0.5) 0%, rgba(183, 88, 247, 0) 60%);
+  background: radial-gradient(circle, rgba(183, 88, 247, 0.5) 0%, rgba(183, 88, 247, 0) 90%);
 }
 
 #nebula-space {
@@ -27,14 +27,14 @@
 
 #nebula-space * {
   position: absolute;
-  width: 1000px;
-  height: 1000px;
+  width: 800px;
+  height: 800px;
   z-index: 2;
   border-radius: 50%;
   opacity: 0.5;
   left: 50%;
   top: 50%;
-  transform: translate(-50%, -50%)
+  transform: translate(-50%, -50%);
 }
 
 #star-space * {
