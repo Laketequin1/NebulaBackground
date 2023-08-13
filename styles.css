@@ -15,7 +15,7 @@
 }
 
 #nebula-space {
-  filter: blur(150px);
+  filter: blur(130px);
   width: 100vw;
   height: 100vh;
   position: absolute;
