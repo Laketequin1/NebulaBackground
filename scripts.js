@@ -19,50 +19,88 @@ document.body.onpointermove = event => {
 };
 */
 
-const moveSpeed = 300; // pixels per second
-const timeInterval = 16; // milliseconds
-var velocityX = 0;
-var velocityY = 0;
+const moveSpeed = 0.1; // pixels per second
+const pushForce = -8;
+const friction = 0.995;
+const timeInterval = 200; // milliseconds;
 
-function move(child) {
-    const { clientWidth, clientHeight } = document.documentElement;
-    const randomX = Math.random() * clientWidth;
-    const randomY = Math.random() * clientHeight;
-
-    let currentX = child.offsetLeft;
-    let currentY = child.offsetTop;
+function updatePosition(child, randomX, randomY, children) {
+    const currentX = child.offsetLeft;
+    const currentY = child.offsetTop;
 
     const deltaX = randomX - currentX;
     const deltaY = randomY - currentY;
     const distance = Math.sqrt(deltaX ** 2 + deltaY ** 2);
 
-    const velocityX = (deltaX / distance) * moveSpeed;
-    const velocityY = (deltaY / distance) * moveSpeed;
+    child.velocityX += (deltaX / distance) * moveSpeed;
+    child.velocityY += (deltaY / distance) * moveSpeed;
 
-    function updatePosition() {
-        currentX += velocityX * (timeInterval / 1000);
-        currentY += velocityY * (timeInterval / 1000);
+    for (const otherChild of children) {
+        if (otherChild !== child) {
+            const currentX = child.offsetLeft;
+            const currentY = child.offsetTop;
 
-        child.style.left = `${currentX}px`;
-        child.style.top = `${currentY}px`;
+            const deltaX = otherChild.offsetLeft - currentX;
+            const deltaY = otherChild.offsetTop - currentY;
+            const distance = Math.sqrt(deltaX ** 2 + deltaY ** 2);
 
-        const remainingDistance = Math.sqrt((randomX - currentX) ** 2 + (randomY - currentY) ** 2);
-
-        if (remainingDistance > ) {
-            requestAnimationFrame(updatePosition);
-        } else {
-            moveToRandomPoint(child);
+            child.velocityX += (deltaX / distance) * pushForce * (1 / distance);
+            child.velocityY += (deltaY / distance) * pushForce * (1 / distance);
         }
     }
 
-    updatePosition();
+    child.velocityX *= friction;
+    child.velocityY *= friction;
+
+    child.animate(
+        [
+            { left: child.style.left, top: child.style.top },
+            { left: `${currentX + child.velocityX}px`, top: `${currentY + child.velocityY}px` }
+        ],
+        { duration: timeInterval, fill: "forwards" }
+    );
+
+    const remainingDistance = Math.sqrt((randomX - currentX) ** 2 + (randomY - currentY) ** 2);
+
+    if (remainingDistance > 80) {
+        requestAnimationFrame(() => {
+            updatePosition(child, randomX, randomY, children);
+        });
+    } else {
+        move(child, children);
+    }
+}
+
+function move(child, children) {
+    const { clientWidth, clientHeight } = document.documentElement;
+    const randomX = Math.random() * (clientWidth);
+    const randomY = Math.random() * (clientHeight);
+
+    setTimeout(() => {
+        updatePosition(child, randomX, randomY, children);
+    }, timeInterval);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
     const nebulaSpace = document.getElementById("nebula-space");
     const children = nebulaSpace.children;
+    const { clientWidth, clientHeight } = document.documentElement;
 
     for (const child of children) {
-        move(child);
+        const randomX = Math.random() * (clientWidth);
+        const randomY = Math.random() * (clientHeight);
+
+        child.animate(
+            [
+                { left: child.style.left, top: child.style.top },
+                { left: `${randomX}px`, top: `${randomY}px` }
+            ],
+            { duration: 0, fill: "forwards" }
+        );
+        
+        child.velocityX = 0;
+        child.velocityY = 0;
+
+        move(child, Array.from(children));
     }
 });
