@@ -1,8 +1,7 @@
 // Constants
-const moveSpeed = 0.13;
-const pushForce = 1000;
+const moveSpeed = 0.05;
+const pushForce = 600;
 const friction = 0.98;
-const timeInterval = 200;
 
 // Get the client dimensions
 const { clientWidth, clientHeight } = document.documentElement;
@@ -31,7 +30,6 @@ function addElementsToNebulaSpace() {
 }
 
 const numIterations = Math.floor(clientWidth / 600); // Calculate number of iterations
-console.log(numIterations);
 
 for (let i = 0; i < numIterations; i++) {
     addElementsToNebulaSpace();
@@ -43,7 +41,7 @@ function clamp(value, min, max) {
 }
 
 // Update position of a child element
-function updatePosition(child, randomX, randomY, children) {
+function updatePosition(child, randomX, randomY, children) {    
     const currentX = child.offsetLeft;
     const currentY = child.offsetTop;
 
@@ -51,6 +49,9 @@ function updatePosition(child, randomX, randomY, children) {
     const deltaX = randomX - currentX;
     const deltaY = randomY - currentY;
     const distance = Math.sqrt(deltaX ** 2 + deltaY ** 2);
+
+    child.velocityX += (deltaX / distance) * moveSpeed;
+    child.velocityY += (deltaY / distance) * moveSpeed;
 
     // Apply forces from other children
     for (const otherChild of children) {
@@ -72,13 +73,8 @@ function updatePosition(child, randomX, randomY, children) {
     child.velocityY *= friction;
 
     // Animate the child's movement
-    child.animate(
-        [
-            { left: child.style.left, top: child.style.top },
-            { left: `${currentX + child.velocityX}px`, top: `${currentY + child.velocityY}px` }
-        ],
-        { duration: timeInterval + 20, fill: "forwards" }
-    );
+    child.style.left = `${currentX + child.velocityX}px`;
+    child.style.top = `${currentY + child.velocityY}px`;
 
     // Calculate remaining distance
     const remainingDistance = Math.sqrt((randomX - currentX) ** 2 + (randomY - currentY) ** 2);
@@ -95,12 +91,10 @@ function updatePosition(child, randomX, randomY, children) {
 
 // Move the child element
 function move(child, children) {
-    const randomX = Math.random() * clientWidth;
-    const randomY = Math.random() * clientHeight;
+    const randomX = (Math.random() * 1.2 - 0.1) * clientWidth;
+    const randomY = (Math.random() * 1.2 - 0.1) * clientHeight;
 
-    setTimeout(() => {
-        updatePosition(child, randomX, randomY, children);
-    }, timeInterval);
+    updatePosition(child, randomX, randomY, children);
 }
 
 // Run when the DOM is loaded
@@ -110,17 +104,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Initialize child elements
     for (const child of children) {
-        const randomX = Math.random() * clientWidth;
-        const randomY = Math.random() * clientHeight;
+        const randomX = (Math.random() * 1.2 - 0.1) * clientWidth;
+        const randomY = (Math.random() * 1.2 - 0.1) * clientHeight;
 
         // Set initial position animation
-        child.animate(
-            [
-                { left: child.style.left, top: child.style.top },
-                { left: `${randomX}px`, top: `${randomY}px` }
-            ],
-            { duration: 0, fill: "forwards" }
-        );
+        child.style.left = `${randomX}px`;
+        child.style.top = `${randomY}px`;
         
         // Initialize velocities
         child.velocityX = 0;
