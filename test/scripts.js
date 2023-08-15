@@ -91,12 +91,6 @@ function createStar(mx, my) {
         speed: (starSize / 14) * (dist / 1100) + 0.04,
         alpha: 1 - Math.abs(dist) / cw,
         draw: function () {
-            //ctx.strokeStyle = "hsla(" + this.colorAngle + ",100%,50%,1)";
-            var starGradient = ctx.createLinearGradient(0, 0, 0, ch);
-            starGradient.addColorStop(clamp(this.y / ch, 0, 1), "rgba(255, 255, 255, 1)");
-            //  starGradient.addColorStop(clamp((this.y + this.size-1) / ch, 0, 1), "rgba(255, 255, 255, 1)");
-            //  starGradient.addColorStop(clamp((this.y + this.size) / ch, 0, 1), "rgba(255, 255, 255, 0.2)");
-            //  starGradient.addColorStop(clamp((this.y + this.size * trailSize) / ch, 0, 1), "rgba(255, 255, 255, 0)");
             ctx.fillStyle = "rgba(255, 255, 255, 1)";
             ctx.fillStyle = starGradient;
             ctx.fillRect(Math.floor(this.x - this.size / 2), Math.floor(this.y - this.size / 2), this.size, this.size);
@@ -143,14 +137,13 @@ function createShootingStar(mx, my) {
         speed: (starSize / 14) * (dist / 1100) + 0.04,
         alpha: 1 - Math.abs(dist) / cw,
         draw: function () {
-            //ctx.strokeStyle = "hsla(" + this.colorAngle + ",100%,50%,1)";
             var starGradient = ctx.createLinearGradient(0, 0, 0, ch);
             starGradient.addColorStop(clamp(this.y / ch, 0, 1), "rgba(255, 255, 255, 1)");
             //  starGradient.addColorStop(clamp((this.y + this.size-1) / ch, 0, 1), "rgba(255, 255, 255, 1)");
             //  starGradient.addColorStop(clamp((this.y + this.size) / ch, 0, 1), "rgba(255, 255, 255, 0.2)");
             //  starGradient.addColorStop(clamp((this.y + this.size * trailSize) / ch, 0, 1), "rgba(255, 255, 255, 0)");
             ctx.fillStyle = "rgba(255, 255, 255, 1)";
-            ctx.fillStyle = starGradient;
+            ctx.strokeStyle = "hsla(" + this.colorAngle + ",100%,50%,1)";
             ctx.fillRect(Math.floor(this.x - this.size / 2), Math.floor(this.y - this.size / 2), this.size, this.size);
             //ctx.lineWidth = this.size;
             //ctx.beginPath();
