@@ -1,54 +1,144 @@
-// Constants
-const moveSpeed = 2;
-const starDuration = 500;
-const trailDuration = 50;
-const trailSmoothing = 10;
-const frameDuration = 16;
+window.requestAnimFrame = function () {
+    return (
+        window.requestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.oRequestAnimationFrame ||
+        window.msRequestAnimationFrame ||
+        function (a) {
+            window.setTimeout(a, 1000 / 60);
+        }
+    );
+}();
 
-// Get the client dimensions
-const { clientWidth, clientHeight } = document.documentElement;
+document.onselectstart = function () {
+    return false;
+};
+var c = document.getElementById("c");
+var ctx = c.getContext("2d");
+var dpr = window.devicePixelRatio;
+var cw = window.innerWidth;
+var ch = window.innerHeight;
+c.width = cw * dpr;
+c.height = ch * dpr;
+ctx.scale(dpr, dpr);
+var rand = function (rMi, rMa) {
+    return ~~(Math.random() * (rMa - rMi + 1)) + rMi;
+};
+ctx.lineCap = "round";
+var orbs = [];
+var orbCount = 30;
+var radius;
 
-const shootingStarSpace = document.getElementById("shooting-star-space");
-const shootingStarTrail = document.getElementById("shooting-star-trail");
+var trail = false;
 
-// Create div elements with different classes
-const shootingStar = document.createElement("div");
-shootingStar.duration = starDuration;
-shootingStarSpace.appendChild(shootingStar);
-
-function getRandomStarDirection() {
-    const randomAngle = Math.random() * Math.PI * 2; // Generate a random angle in radians
-    const x = Math.cos(randomAngle); // Calculate the X component based on the angle
-    const y = Math.sin(randomAngle); // Calculate the Y component based on the angle
-    return { x, y }; // Return an object with the calculated components
+function createOrb(mx, my) {
+    var dx = cw / 2 - mx;
+    var dy = ch / 2 - my;
+    var dist = Math.sqrt(dx * dx + dy * dy);
+    var sizeRandom = Math.random();
+    var orbSize;
+    if (sizeRandom < 0.4) {
+        orbSize = 1; // 40% chance for size 1
+    } else if (sizeRandom < 0.7) {
+        orbSize = 2; // 30% chance for size 2
+    } else {
+        orbSize = 3; // 30% chance for size 3
+    }
+    orbs.push({
+        x: mx,
+        y: my,
+        lastX: mx,
+        lastY: my,
+        hue: 0,
+        colorAngle: mx / 15 + 250,
+        angle: Math.PI,
+        size: orbSize,
+        centerX: cw / 2,
+        centerY: ch / 2,
+        radius: dist,
+        speed: (((rand(135, 165) / 1000) * (dist / 750) + 0.05) * orbSize ** 1) / 1.5,
+        alpha: 1 - Math.abs(dist) / cw,
+        draw: function () {
+            //ctx.strokeStyle = "hsla(" + this.colorAngle + ",100%,50%,1)";
+            ctx.fillStyle = "rgb(255, 255, 255)";
+            ctx.fillRect(this.x - 1, this.y - 1, 1, 1);
+            //ctx.lineWidth = this.size;
+            //ctx.beginPath();
+            //ctx.moveTo(this.lastX, this.lastY);
+            //ctx.lineTo(this.x, this.y);
+            //ctx.stroke();
+        },
+        update: function () {
+            this.lastX = this.x;
+            this.lastY = this.y;
+            this.x = this.x;
+            this.y = this.y - 2 * this.speed;
+        },
+    });
 }
 
-var starDirection = getRandomStarDirection();
+function orbGo(e) {
+    var mx = e.pageX - c.offsetLeft;
+    var my = e.pageY - c.offsetTop;
+    createOrb(mx, my);
+}
 
-const interval = setInterval(() => {//Set up loop for multiple stars <------------------------------------
-    const currentX = shootingStar.offsetLeft;
-    const currentY = shootingStar.offsetTop;
+function turnOnMove() {
+    c.addEventListener("mousemove", orbGo, false);
+}
 
-    const newTrail = document.createElement("div");
-    newTrail.style.left = `${currentX}px`;
-    newTrail.style.top = `${currentY}px`;
-    newTrail.duration = trailDuration;
-    shootingStarTrail.appendChild(newTrail);
+function turnOffMove() {
+    c.removeEventListener("mousemove", orbGo, false);
+}
 
-    const newPosX = currentX + (moveSpeed * starDirection.x);
-    const newPosY = currentY + (moveSpeed * starDirection.y);
+function toggleTrails() {
+    trail = trailCB.checked;
+}
 
-    shootingStar.style.left = `${newPosX}px`;
-    shootingStar.style.top = `${newPosY}px`;
+function clear() {
+    orbs = [];
+}
 
-    const children = shootingStarTrail.children;
-    for (const child of children) {
-        if (child.duration >= 0) {
-            child.style.opacity = child.duration/trailDuration;
-            child.style.transform = `translate(-50%, -50%) scale(${(child.duration + trailSmoothing)/(trailDuration + trailSmoothing)})`;
-            child.duration -= 1;
-        } else {
-            child.remove();
+c.addEventListener("mousedown", orbGo, false);
+c.addEventListener("mousedown", turnOnMove, false);
+c.addEventListener("mouseup", turnOffMove, false);
+
+var loop = function () {
+    window.requestAnimFrame(loop);
+    if (trail) {
+        ctx.fillStyle = "rgba(0,0,0,.1)";
+        ctx.fillRect(0, 0, cw, ch);
+    } else {
+        ctx.clearRect(0, 0, cw, ch);
+    }
+    var i = orbs.length;
+    while (i--) {
+        var orb = orbs[i];
+        var updateCount = 3;
+        while (updateCount--) {
+            orb.update();
+            orb.draw(ctx);
+        }
+        if (orb.y < -20) {
+            orbs.splice(i, 1);
         }
     }
-}, frameDuration);
+};
+
+function createRandomOrbAtBottom() {
+    var mx = rand(0, cw);
+    var my = ch;
+    createOrb(mx, my);
+}
+
+for (var i = 0; i < 200; i++){
+    var mx = rand(0, cw);
+    var my = rand(0, ch);
+    createOrb(mx, my);
+}
+
+var spawnInterval = 50; // Adjust the interval as needed
+setInterval(createRandomOrbAtBottom, spawnInterval);
+
+loop();
