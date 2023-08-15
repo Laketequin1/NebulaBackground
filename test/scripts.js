@@ -59,7 +59,7 @@ var shootingStars = [];
 var trail = true;
 var gradient = ctx.createRadialGradient(cw / 2, ch, 0, cw / 2, ch, Math.sqrt(cw * cw + ch * ch));
 
-// Add color stops to the gradient
+// Add color stops to the gradient  
 gradient.addColorStop(0, "rgba(28, 40, 52, 1)");
 gradient.addColorStop(0.65, "rgba(9, 10, 15, 1)");
 
@@ -92,7 +92,6 @@ function createStar(mx, my) {
         alpha: 1 - Math.abs(dist) / cw,
         draw: function () {
             ctx.fillStyle = "rgba(255, 255, 255, 1)";
-            ctx.fillStyle = starGradient;
             ctx.fillRect(Math.floor(this.x - this.size / 2), Math.floor(this.y - this.size / 2), this.size, this.size);
             //ctx.lineWidth = this.size;
             //ctx.beginPath();
