@@ -1,9 +1,9 @@
 const trailSize = 10;
 const spawnInterval = 100;
-const trailDuration = 12;
-const maxShootingStars = 3;
-const shootingStarsSpawnChance = 1/20; // Between 0 and 1
-const shootingStarSpeed = 1;
+const trailDuration = 14;
+const maxShootingStars = 2;
+const shootingStarsSpawnChance = 1 / 15; // Between 0 and 1
+const shootingStarSpeed = 2.9;
 
 window.requestAnimFrame = function () {
     return (
@@ -132,7 +132,7 @@ function createShootingStar() {
         opacity: 1,
         angle: starAngle,
         size: starSize,
-        speed: ((starSize / 14) * rand(0.8, 1.2) + 0.04) * shootingStarSpeed,
+        speed: Math.min(((starSize / 16) * rand(0.9, 1) + 0.04) * shootingStarSpeed, 2.5),
         alpha: 1 - Math.abs(dist) / cw,
         //draw: function () {
             //ctx.fillStyle = "hsla(" + (this.x + Math.sqrt(this.x * this.y)) + ", 100%, 50%, " + this.opacity + ")";
@@ -161,15 +161,17 @@ function createStarTrail(mx, my, starSize) {
         hue: 0,
         opacity: 1,
         size: starSize,
-        speed: (starSize / 14) * (dist / 1100) + 0.04,
         alpha: 1 - Math.abs(dist) / cw,
         draw: function () {
-            ctx.fillStyle = "hsla(" + (this.x + this.y) + ", 100%, 50%, " + this.opacity + ")";
-            ctx.fillRect(Math.floor(this.x - this.size / 2), Math.floor(this.y - this.size / 2), this.size, this.size);
+            ctx.beginPath(); // Start a new path
+            ctx.arc(this.x, this.y, this.size / 2, 0, Math.PI * 2); // Create a circular path
+            ctx.fillStyle = "hsla(" + ((this.x + this.y) / 3) + ", 88%, 29%, " + this.opacity + ")";
+            ctx.fill(); // Fill the path with the color
+            ctx.closePath(); // Close the path
         },
         update: function() {
             this.size -= 1 / trailDuration;
-            this.opacity -= 1 / trailDuration;
+            this.opacity -= 0.8 / trailDuration;
 
             if (this.opacity < 0 || this.size < 0) {
                 starTrail.splice(starTrail.indexOf(this), 1);
@@ -228,7 +230,6 @@ var loop = function () {
 function createRandomStarAtBottom() {
     if (Math.random() < shootingStarsSpawnChance && shootingStars.length < maxShootingStars){
         createShootingStar();
-        console.log("created");
     }
     var mx = rand(0, cw);
     var my = ch;
