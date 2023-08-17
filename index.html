@@ -8,22 +8,34 @@
     <title>Starry Text</title>
 </head>
 <body>
-    <div id="shooting-star-space">
+    <div class="settings-box">
+        <label for="trailSize">Trail Size:</label>
+        <input type="number" id="trailSize" value="10">
+
+        <label for="spawnInterval">Spawn Interval:</label>
+        <input type="number" id="spawnInterval" value="100">
+
+        <label for="trailDuration">Trail Duration:</label>
+        <input type="number" id="trailDuration" value="14">
+
+        <label for="maxShootingStars">Max Shooting Stars:</label>
+        <input type="number" id="maxShootingStars" value="1">
+
+        <label for="shootingStarsSpawnChance">Shooting Star Spawn Chance:</label>
+        <input type="number" id="shootingStarsSpawnChance" step="0.01" min="0" max="1" value="0.067">
+
+        <label for="shootingStarSpeed">Shooting Star Speed:</label>
+        <input type="number" id="shootingStarSpeed" step="0.1" value="2.9">
     </div>
-    <div id="shooting-star-trail">
-    </div>
+
+    <canvas id="c"></canvas>
+
     <div id="nebula-space">
     </div>
-    <div id="star-space">
-        <div class="far-stars stars-one"></div>
-        <div class="far-stars stars-two"></div>
-        <div class="medium-stars stars-one"></div>
-        <div class="medium-stars stars-two"></div>
-        <div class="close-stars stars-one"></div>
-        <div class="close-stars stars-two"></div>
-    </div>    
+       
     <span>Yippee</span>
 
-    <script src="scripts.js"></script>
+    <script src="shootingStar.js"></script>
+    <script src="nebula.js"></script>
 </body>
 </html>
