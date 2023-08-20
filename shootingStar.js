@@ -1,4 +1,3 @@
-var trailSize = 10;
 var spawnInterval = 100;
 var trailDuration = 14;
 var maxShootingStars = 1;
@@ -26,6 +25,8 @@ document.onselectstart = function () {
 function clamp(value, min, max) {
     return Math.min(Math.max(value, min), max);
 }
+
+var intervalId = null;
 
 var c = document.getElementById("c");
 var trailC = document.createElement("canvas");
@@ -232,7 +233,7 @@ function createRandomStarAtBottom() {
         createShootingStar();
     }
     var mx = rand(0, cw);
-    var my = ch;
+    var my = ch + 15;
     createStar(mx, my);
 }
 
@@ -243,20 +244,17 @@ for (var i = 0; i < (ch / 3); i++){
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    const trailSizeInput = document.getElementById("trailSize");
     const spawnIntervalInput = document.getElementById("spawnInterval");
     const trailDurationInput = document.getElementById("trailDuration");
     const maxShootingStarsInput = document.getElementById("maxShootingStars");
-    const shootingStarsSpawnChanceInput = document.getElementById("shootingStarsSpawnChance");
     const shootingStarSpeedInput = document.getElementById("shootingStarSpeed");
-
-    trailSizeInput.addEventListener("input", () => {
-        trailSize = parseInt(trailSizeInput.value);
-        // Update trailSize value in your logic
-    });
 
     spawnIntervalInput.addEventListener("input", () => {
         spawnInterval = parseInt(spawnIntervalInput.value);
+        if (intervalId){
+            clearInterval(intervalId);
+            intervalId = setInterval(createRandomStarAtBottom, spawnInterval);
+        }
         // Update spawnInterval value in your logic
     });
 
@@ -271,16 +269,11 @@ document.addEventListener("DOMContentLoaded", () => {
         // Update maxShootingStars value in your logic
     });
 
-    shootingStarsSpawnChanceInput.addEventListener("input", () => {
-        shootingStarsSpawnChance = parseFloat(shootingStarsSpawnChanceInput.value);
-        // Update shootingStarsSpawnChance value in your logic
-    });
-
     shootingStarSpeedInput.addEventListener("input", () => {
         shootingStarSpeed = parseFloat(shootingStarSpeedInput.value);
         // Update shootingStarSpeed value in your logic
     });
 
-    setInterval(createRandomStarAtBottom, spawnInterval);
+    intervalId = setInterval(createRandomStarAtBottom, spawnInterval);
     loop();
 });

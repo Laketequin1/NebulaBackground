@@ -2,10 +2,10 @@
 const moveSpeed = 0.05;
 const pushForce = 600;
 const friction = 0.98;
-const numIterations = Math.floor(clientWidth / 600); // Calculate number of iterations
 
 // Get the client dimensions
 const { clientWidth, clientHeight } = document.documentElement;
+const numIterations = Math.floor(clientWidth / 600); // Calculate number of iterations
 
 function addElementsToNebulaSpace() {
     const nebulaSpace = document.getElementById("nebula-space");

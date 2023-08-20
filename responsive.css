@@ -1,0 +1,13 @@
+@media screen and (max-width: 1365px) {
+	#nebula-space *{
+        width: 600px;
+        height: 600px;
+	}
+}
+
+@media screen and (max-width: 800px) {
+	#nebula-space *{
+        width: 500px;
+        height: 500px;
+	}
+}
