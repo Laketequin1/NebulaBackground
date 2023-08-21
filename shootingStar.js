@@ -1,8 +1,8 @@
 var spawnInterval = 100;
-var trailDuration = 13;
+var trailDuration = 11;
 var maxShootingStars = 2;
 var shootingStarsSpawnChance = 1 / 15; // Between 0 and 1
-var shootingStarSpeed = 4.2;
+var shootingStarSpeed = 5;
 
 window.requestAnimFrame = function () {
     return (
@@ -216,7 +216,7 @@ var loop = function () {
     var i = shootingStars.length;
     while (i--) {
         var shootingStar = shootingStars[i];
-        var updateCount = 3;
+        var updateCount = 4;
         while (updateCount--) {
             shootingStar.update();
             //shootingStar.draw(ctx);
