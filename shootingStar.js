@@ -166,7 +166,7 @@ function createStarTrail(mx, my, starSize) {
         draw: function () {
             ctx.beginPath(); // Start a new path
             ctx.arc(this.x, this.y, this.size / 2, 0, Math.PI * 2); // Create a circular path
-            ctx.fillStyle = "hsla(" + ((this.x + this.y) / 3) + ", 88%, 29%, " + this.opacity + ")";
+            ctx.fillStyle = "hsla(" + ((this.x + this.y) / 3) + ", 88%, 80%, " + this.opacity + ")";
             ctx.fill(); // Fill the path with the color
             ctx.closePath(); // Close the path
         },

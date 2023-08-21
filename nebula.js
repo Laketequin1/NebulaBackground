@@ -1,7 +1,8 @@
 // Constants
-const moveSpeed = 0.05;
-const pushForce = 600;
-const friction = 0.98;
+const moveSpeed = 0.07;
+const pushForce = 820;
+const friction = 0.984;
+const tickDuration = 50;
 
 // Get the client dimensions
 const { clientWidth, clientHeight } = document.documentElement;
@@ -40,51 +41,58 @@ function clamp(value, min, max) {
 }
 
 // Update position of a child element
-function updatePosition(child, randomX, randomY, children) {    
-    const currentX = child.offsetLeft;
-    const currentY = child.offsetTop;
+function updatePosition(child, randomX, randomY, children, currentTime) {
+    if (currentTime - child.lastRunTime > tickDuration) {
+        child.lastRunTime = currentTime;
+        const currentX = child.offsetLeft;
+        const currentY = child.offsetTop;
 
-    // Calculate the distance between the current and random positions
-    const deltaX = randomX - currentX;
-    const deltaY = randomY - currentY;
-    const distance = Math.sqrt(deltaX ** 2 + deltaY ** 2);
+        // Calculate the distance between the current and random positions
+        const deltaX = randomX - currentX;
+        const deltaY = randomY - currentY;
+        const distance = Math.sqrt(deltaX ** 2 + deltaY ** 2);
 
-    child.velocityX += (deltaX / distance) * moveSpeed;
-    child.velocityY += (deltaY / distance) * moveSpeed;
+        child.velocityX += (deltaX / distance) * moveSpeed;
+        child.velocityY += (deltaY / distance) * moveSpeed;
 
-    // Apply forces from other children
-    for (const otherChild of children) {
-        if (otherChild !== child) {
-            const otherX = otherChild.offsetLeft;
-            const otherY = otherChild.offsetTop;
-            const deltaOtherX = otherX - currentX;
-            const deltaOtherY = otherY - currentY;
-            const otherDistance = Math.sqrt(deltaOtherX ** 2 + deltaOtherY ** 2);
+        // Apply forces from other children
+        for (const otherChild of children) {
+            if (otherChild !== child) {
+                const otherX = otherChild.offsetLeft;
+                const otherY = otherChild.offsetTop;
+                const deltaOtherX = otherX - currentX;
+                const deltaOtherY = otherY - currentY;
+                const otherDistance = Math.sqrt(deltaOtherX ** 2 + deltaOtherY ** 2);
 
-            // Apply push force inversely proportional to distance
-            child.velocityX += (deltaOtherX / otherDistance ** 1.75) * -pushForce * (1 / otherDistance);
-            child.velocityY += (deltaOtherY / otherDistance ** 1.75) * -pushForce * (1 / otherDistance);
+                // Apply push force inversely proportional to distance
+                child.velocityX += (deltaOtherX / otherDistance ** 1.75) * -pushForce * (1 / otherDistance);
+                child.velocityY += (deltaOtherY / otherDistance ** 1.75) * -pushForce * (1 / otherDistance);
+            }
         }
-    }
 
-    // Apply friction
-    child.velocityX *= friction;
-    child.velocityY *= friction;
+        // Apply friction
+        child.velocityX *= friction;
+        child.velocityY *= friction;
 
-    // Animate the child's movement
-    child.style.left = `${currentX + child.velocityX}px`;
-    child.style.top = `${currentY + child.velocityY}px`;
+        // Animate the child's movement
+        child.style.left = `${currentX + child.velocityX}px`;
+        child.style.top = `${currentY + child.velocityY}px`;
 
-    // Calculate remaining distance
-    const remainingDistance = Math.sqrt((randomX - currentX) ** 2 + (randomY - currentY) ** 2);
+        // Calculate remaining distance
+        const remainingDistance = Math.sqrt((randomX - currentX) ** 2 + (randomY - currentY) ** 2);
 
-    // Request animation frame if remaining distance is greater than a threshold
-    if (remainingDistance > 80) {
-        requestAnimationFrame(() => {
-            updatePosition(child, randomX, randomY, children);
-        });
+        // Request animation frame if remaining distance is greater than a threshold
+        if (remainingDistance > 80) {
+            requestAnimationFrame((currentTime) => {
+                updatePosition(child, randomX, randomY, children, currentTime);
+            });
+        } else {
+            move(child, children);
+        }
     } else {
-        move(child, children);
+        requestAnimationFrame((currentTime) => {
+            updatePosition(child, randomX, randomY, children, currentTime);
+        });
     }
 }
 
@@ -93,7 +101,7 @@ function move(child, children) {
     const randomX = (Math.random() * 1.2 - 0.1) * clientWidth;
     const randomY = (Math.random() * 1.2 - 0.1) * clientHeight;
 
-    updatePosition(child, randomX, randomY, children);
+    updatePosition(child, randomX, randomY, children, performance.now());
 }
 
 // Run when the DOM is loaded
@@ -113,6 +121,8 @@ document.addEventListener("DOMContentLoaded", () => {
         // Initialize velocities
         child.velocityX = 0;
         child.velocityY = 0;
+
+        child.lastRunTime = 0;
 
         // Start movement
         move(child, Array.from(children));
