@@ -1,8 +1,8 @@
 // Constants
-const moveSpeed = 0.07;
-const pushForce = 820;
+const moveSpeed = 0.11;
+const pushForce = 950;
 const friction = 0.984;
-const tickDuration = 50;
+const tickDuration = 120;
 
 // Get the client dimensions
 const { clientWidth, clientHeight } = document.documentElement;
