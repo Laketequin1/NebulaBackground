@@ -1,8 +1,8 @@
 var spawnInterval = 100;
-var trailDuration = 14;
-var maxShootingStars = 1;
+var trailDuration = 15;
+var maxShootingStars = 2;
 var shootingStarsSpawnChance = 1 / 15; // Between 0 and 1
-var shootingStarSpeed = 2.9;
+var shootingStarSpeed = 4.2;
 
 window.requestAnimFrame = function () {
     return (
@@ -120,7 +120,7 @@ function createShootingStar() {
     if (sizeRandom < 0.55) {
         starSize = 7; // 50% chance for size 1
     } else if (sizeRandom < 0.9) {
-        starSize = 9; // 40% chance for size 2
+        starSize = 8; // 40% chance for size 2
     } else {
         starSize = 5; // 10% chance for size 3
     }
@@ -166,7 +166,7 @@ function createStarTrail(mx, my, starSize) {
         draw: function () {
             ctx.beginPath(); // Start a new path
             ctx.arc(this.x, this.y, this.size / 2, 0, Math.PI * 2); // Create a circular path
-            ctx.fillStyle = "hsla(" + ((this.x + this.y) / 3) + ", 88%, 80%, " + this.opacity + ")";
+            ctx.fillStyle = "hsla(" + ((this.x + this.y) / 3) + ", 88%, 80%, " + this.opacity * 0.8 + ")";
             ctx.fill(); // Fill the path with the color
             ctx.closePath(); // Close the path
         },
