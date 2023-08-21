@@ -1,5 +1,5 @@
 var spawnInterval = 100;
-var trailDuration = 15;
+var trailDuration = 13;
 var maxShootingStars = 2;
 var shootingStarsSpawnChance = 1 / 15; // Between 0 and 1
 var shootingStarSpeed = 4.2;
